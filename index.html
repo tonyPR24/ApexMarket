@@ -293,6 +293,28 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .disclaimer{margin-top:32px;padding:16px 20px;border:1px solid var(--border);background:var(--surface);display:flex;gap:14px;align-items:flex-start;}
 .disc-icon{font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:1px;white-space:nowrap;margin-top:2px;}
 .disc-text{font-size:11px;color:var(--muted2);line-height:1.6;font-weight:300;}
+.auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;}
+.auth-box{background:var(--card);border:1px solid var(--border);padding:48px;width:100%;max-width:420px;}
+.auth-logo{font-family:var(--display);font-size:40px;letter-spacing:8px;color:var(--gold);margin-bottom:4px;}
+.auth-tagline{font-family:var(--mono);font-size:9px;color:var(--muted2);letter-spacing:3px;margin-bottom:32px;}
+.auth-title{font-family:var(--display);font-size:24px;letter-spacing:3px;margin-bottom:24px;}
+.auth-input{width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:13px;padding:12px 16px;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.auth-input:focus{border-color:var(--gold);}
+.auth-btn{width:100%;background:var(--gold);color:#000;border:none;padding:13px;font-family:var(--mono);font-size:11px;letter-spacing:3px;cursor:pointer;font-weight:700;margin-bottom:12px;}
+.auth-btn:hover{background:var(--gold2);}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
+.auth-divider span{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.google-btn{width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:12px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color .2s;margin-bottom:20px;}
+.google-btn:hover{border-color:var(--gold);}
+.auth-switch{font-size:13px;color:var(--muted2);text-align:center;}
+.auth-switch a{color:var(--gold);cursor:pointer;}
+.auth-error{font-family:var(--mono);font-size:10px;color:var(--red);margin-bottom:12px;min-height:16px;letter-spacing:1px;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border2);padding:5px 12px;}
+.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:#000;font-weight:700;}
+.user-email{font-family:var(--mono);font-size:9px;color:var(--muted2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.signout-btn{background:none;border:1px solid var(--border2);color:var(--muted2);font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:5px 10px;cursor:pointer;transition:all .2s;}
+.signout-btn:hover{border-color:var(--red);color:var(--red);}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1px solid var(--gold);color:var(--gold);font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:12px 20px;z-index:9998;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 
@@ -353,8 +375,54 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <div class="pulse-dot"></div>
     <span class="live-txt" id="liveStatus">SCANNING</span>
     <button class="rescan-btn" id="rescanBtn" onclick="startScan()" disabled>↻ RESCAN</button>
+    <div id="userArea" style="display:none;align-items:center;gap:8px;">
+      <div class="user-pill">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <span class="user-email" id="userEmail">—</span>
+      </div>
+      <button class="signout-btn" onclick="signOut()">SIGN OUT</button>
+    </div>
   </div>
 </header>
+
+<!-- AUTH OVERLAY -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-logo">APEX</div>
+    <div class="auth-tagline">AI MARKET INTELLIGENCE</div>
+
+    <!-- SIGN IN VIEW -->
+    <div id="signInView">
+      <div class="auth-title">SIGN IN</div>
+      <div class="auth-error" id="signInError"></div>
+      <input class="auth-input" id="siEmail" type="email" placeholder="Email address">
+      <input class="auth-input" id="siPassword" type="password" placeholder="Password">
+      <button class="auth-btn" onclick="signInEmail()">SIGN IN</button>
+      <div class="auth-divider"><span>OR</span></div>
+      <button class="google-btn" onclick="signInGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z"/></svg>
+        CONTINUE WITH GOOGLE
+      </button>
+      <div class="auth-switch">Don't have an account? <a onclick="showSignUp()">Sign up free</a></div>
+    </div>
+
+    <!-- SIGN UP VIEW -->
+    <div id="signUpView" style="display:none">
+      <div class="auth-title">CREATE ACCOUNT</div>
+      <div class="auth-error" id="signUpError"></div>
+      <input class="auth-input" id="suEmail" type="email" placeholder="Email address">
+      <input class="auth-input" id="suPassword" type="password" placeholder="Password (min 6 characters)">
+      <input class="auth-input" id="suConfirm" type="password" placeholder="Confirm password">
+      <button class="auth-btn" onclick="signUpEmail()">CREATE ACCOUNT</button>
+      <div class="auth-divider"><span>OR</span></div>
+      <button class="google-btn" onclick="signInGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z"/></svg>
+        CONTINUE WITH GOOGLE
+      </button>
+      <div class="auth-switch">Already have an account? <a onclick="showSignIn()">Sign in</a></div>
+    </div>
+  </div>
+</div>
 
 <!-- TICKER TAPE -->
 <div class="ticker-tape">
@@ -471,7 +539,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <!-- ALERTS PAGE -->
 <div class="page" id="page-alerts">
   <div class="page-title">ALERT CENTER</div>
-  <div class="page-sub">Configure what triggers your APEX alerts.</div>
+  <div class="page-sub">Get notified by email and text the moment APEX detects a major market move.</div>
+
+  <!-- TRIGGER PREFERENCES -->
   <div class="alert-setup">
     <div class="alert-ttl">TRIGGER PREFERENCES</div>
     <div class="alert-types">
@@ -481,17 +551,94 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <button class="at-btn on" id="aAnalyst" onclick="toggleAP('analyst','aAnalyst')"><div class="at-dot"></div>ANALYST ACTION</button>
       <button class="at-btn on" id="aDaily" onclick="toggleAP('daily','aDaily')"><div class="at-dot"></div>DAILY DIGEST</button>
     </div>
-    <div class="alert-form">
-      <div class="form-field"><label class="form-lbl">YOUR EMAIL</label><input class="form-input wide" id="aEmail" placeholder="you@email.com" type="email"></div>
-      <div class="form-field"><label class="form-lbl">DAILY TIME</label><input class="form-input" id="aTime" type="time" value="07:00"></div>
-      <button class="save-btn" onclick="saveAlerts()">SAVE</button>
+
+    <!-- EMAIL SECTION -->
+    <div style="border:1px solid var(--border);padding:20px;margin-bottom:16px;background:rgba(0,0,0,.2);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:3px;">✉ EMAIL ALERTS</div>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <button class="at-btn on" id="aEmailOn" onclick="toggleAP('emailOn','aEmailOn')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>ENABLED</button>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="form-field"><label class="form-lbl">EMAIL ADDRESS</label><input class="form-input wide" id="aEmail" placeholder="you@email.com" type="email"></div>
+        <div class="form-field"><label class="form-lbl">DAILY DIGEST TIME</label><input class="form-input" id="aTime" type="time" value="07:00"></div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted2);line-height:1.5;">
+        Powered by <strong style="color:var(--text)">SendGrid</strong> — connects automatically when deployed to Vercel.
+      </div>
+    </div>
+
+    <!-- SMS SECTION -->
+    <div style="border:1px solid var(--border);padding:20px;margin-bottom:16px;background:rgba(0,0,0,.2);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:3px;">📱 TEXT / SMS ALERTS</div>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <button class="at-btn" id="aSmsOn" onclick="toggleAP('smsOn','aSmsOn')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>DISABLED</button>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="form-field"><label class="form-lbl">PHONE NUMBER</label><input class="form-input wide" id="aPhone" placeholder="+1 (555) 000-0000" type="tel"></div>
+        <div class="form-field">
+          <label class="form-lbl">ALERTS TO SEND VIA TEXT</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+            <button class="at-btn on" id="sSB" onclick="toggleAP('smsSB','sSB')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>STRONG BUY</button>
+            <button class="at-btn on" id="sMove" onclick="toggleAP('smsMove','sMove')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>3%+ MOVE</button>
+            <button class="at-btn" id="sDaily" onclick="toggleAP('smsDaily','sDaily')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>DAILY DIGEST</button>
+            <button class="at-btn" id="sAnalyst" onclick="toggleAP('smsAnalyst','sAnalyst')" style="padding:4px 12px;font-size:8px;"><div class="at-dot"></div>ANALYST ACTION</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);">
+        <div style="font-family:var(--mono);font-size:8px;color:var(--green);letter-spacing:2px;margin-bottom:4px;">EXAMPLE TEXT YOU'D RECEIVE</div>
+        <div style="font-size:12px;color:var(--muted2);line-height:1.6;">
+          🚨 <strong style="color:var(--text)">APEX ALERT:</strong> NVDA up 4.2% on 3.1x normal volume. AI signal: STRONG BUY (84% confidence). Breaking: Jensen Huang keynote drives surge. → apexalpha.com
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted2);line-height:1.5;">
+        Powered by <strong style="color:var(--text)">Twilio</strong> — free trial includes $15 credit (~500 texts). Connects when deployed to Vercel.
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="save-btn" onclick="saveAlerts()">SAVE ALL PREFERENCES</button>
       <span class="saved-txt" id="savedTxt">✓ SAVED</span>
     </div>
+
+    <!-- VERCEL NOTE -->
+    <div style="margin-top:16px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);">
+      <div style="font-family:var(--mono);font-size:8px;color:#93c5fd;letter-spacing:2px;margin-bottom:4px;">ℹ DEPLOYMENT NOTE</div>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.6;">Email and text alerts require a backend to send securely. Your preferences are saved now — alerts will activate automatically once APEX is deployed to <strong style="color:var(--text)">Vercel</strong> with SendGrid + Twilio connected.</div>
+    </div>
   </div>
+
+  <!-- ALERT PREVIEW -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
     <div style="font-family:var(--display);font-size:20px;letter-spacing:3px;">ALERT LOG</div>
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted2)">FIRES AUTOMATICALLY WHEN TRIGGERS DETECTED</div>
   </div>
+
+  <!-- ALERT PREVIEW CARDS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);padding:16px 18px;">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--muted2);letter-spacing:2px;margin-bottom:8px;">✉ EMAIL PREVIEW — DAILY DIGEST</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:6px;"><strong>Good morning.</strong> APEX has ranked today's top opportunities.</div>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.7;">
+        🥇 <strong style="color:var(--gold)">NVDA</strong> — Strong Buy · 84% conf · AI infrastructure surge<br>
+        🥈 <strong style="color:var(--gold)">META</strong> — Buy · 79% conf · Ad revenue beat<br>
+        🥉 <strong style="color:var(--gold)">AVGO</strong> — Buy · 76% conf · Broadcom AI chips<br>
+        <span style="color:var(--muted)">+ 17 more ranked at apexalpha.com</span>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);padding:16px 18px;">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--muted2);letter-spacing:2px;margin-bottom:8px;">📱 TEXT PREVIEW — LIVE ALERT</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.8;">
+        🚨 <strong>APEX:</strong> TSLA down 5.1% on 2.8x volume.<br>
+        Signal: <strong style="color:var(--red)">SELL</strong> · Risk: HIGH<br>
+        Reason: Delivery miss + Elon distraction<br>
+        <span style="color:var(--muted2)">→ apexalpha.com</span>
+      </div>
+    </div>
+  </div>
+
   <div class="alert-log" id="alertLog"></div>
 </div>
 
@@ -606,12 +753,114 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 <div class="toast" id="toast"></div>
 
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBBlIHY-p6fnUw0nekstEKB41oiJFuxSpU",
+  authDomain: "apexmarket-f6fb4.firebaseapp.com",
+  projectId: "apexmarket-f6fb4",
+  storageBucket: "apexmarket-f6fb4.firebasestorage.app",
+  messagingSenderId: "795500042070",
+  appId: "1:795500042070:web:caba3abdc5e097e9f2a8f7"
+};
+
+const app      = initializeApp(firebaseConfig);
+const auth     = getAuth(app);
+const db       = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('userArea').style.display    = 'flex';
+    document.getElementById('userEmail').textContent     = user.email || user.displayName || 'User';
+    document.getElementById('userAvatar').textContent    = (user.email || user.displayName || 'U')[0].toUpperCase();
+    // Load portfolio from Firestore
+    await loadPortfolioFromFirestore(user.uid);
+    if (typeof renderPortfolio === 'function') renderPortfolio();
+  } else {
+    currentUser = null;
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('userArea').style.display    = 'none';
+  }
+});
+
+// ── SAVE/LOAD PORTFOLIO ──
+window.savePortfolioToFirestore = async function(uid, data) {
+  try { await setDoc(doc(db, 'portfolios', uid), { positions: data }); } catch(e) { console.error(e); }
+};
+
+window.loadPortfolioFromFirestore = async function(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'portfolios', uid));
+    if (snap.exists()) {
+      window._portfolio = snap.data().positions || [];
+    }
+  } catch(e) { console.error(e); }
+};
+
+window.getCurrentUser = () => currentUser;
+
+// ── SIGN IN / SIGN UP ──
+window.signInEmail = async function() {
+  const email = document.getElementById('siEmail').value.trim();
+  const pass  = document.getElementById('siPassword').value;
+  document.getElementById('signInError').textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    document.getElementById('signInError').textContent = e.message.replace('Firebase: ', '').replace(/\(auth.*\)\.?/, '');
+  }
+};
+
+window.signUpEmail = async function() {
+  const email   = document.getElementById('suEmail').value.trim();
+  const pass    = document.getElementById('suPassword').value;
+  const confirm = document.getElementById('suConfirm').value;
+  document.getElementById('signUpError').textContent = '';
+  if (pass !== confirm) { document.getElementById('signUpError').textContent = 'Passwords do not match'; return; }
+  if (pass.length < 6)  { document.getElementById('signUpError').textContent = 'Password must be at least 6 characters'; return; }
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    document.getElementById('signUpError').textContent = e.message.replace('Firebase: ', '').replace(/\(auth.*\)\.?/, '');
+  }
+};
+
+window.signInGoogle = async function() {
+  try { await signInWithPopup(auth, provider); }
+  catch(e) { console.error(e); }
+};
+
+window.signOut = async function() {
+  await fbSignOut(auth);
+  toast('Signed out successfully');
+};
+
+window.showSignUp = function() {
+  document.getElementById('signInView').style.display = 'none';
+  document.getElementById('signUpView').style.display = 'block';
+};
+
+window.showSignIn = function() {
+  document.getElementById('signUpView').style.display = 'none';
+  document.getElementById('signInView').style.display = 'block';
+};
+</script>
+
 <script>
 // ============================================================
 // ⚙️  YOUR API KEY — ONLY CHANGE THIS ONE LINE
 // ============================================================
 const APEX_API_KEY = 'PASTE-YOUR-KEY-HERE';
-
 // ============================================================
 
 // The stocks we actively scan for movement
@@ -822,10 +1071,13 @@ Rules:
 - reflect real market conditions as of ${today}`;
 
     advanceStage(6);
-    const resp = await fetch('/api/chat', {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-                'Content-Type': 'application/json'
+        'x-api-key': APEX_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
     });
@@ -1018,7 +1270,13 @@ function toggleCard(ticker) {
 }
 
 // ── PORTFOLIO ──
-function savePort() { localStorage.setItem('apexPortV2', JSON.stringify(portfolio)); }
+function savePort() {
+  localStorage.setItem('apexPortV2', JSON.stringify(portfolio));
+  const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+  if (user && typeof savePortfolioToFirestore === 'function') {
+    savePortfolioToFirestore(user.uid, portfolio);
+  }
+}
 
 function addPosition() {
   const ticker = document.getElementById('pTicker').value.toUpperCase().trim();
@@ -1089,8 +1347,9 @@ function toggleAP(key, id) {
   document.getElementById(id).classList.toggle('on', alertPrefs[key]);
 }
 function saveAlerts() {
-  alertPrefs.email = document.getElementById('aEmail').value;
-  alertPrefs.time  = document.getElementById('aTime').value;
+  alertPrefs.email    = document.getElementById('aEmail').value;
+  alertPrefs.time     = document.getElementById('aTime').value;
+  alertPrefs.phone    = document.getElementById('aPhone').value;
   localStorage.setItem('apexAlertsV2', JSON.stringify(alertPrefs));
   const el = document.getElementById('savedTxt'); el.style.opacity = '1';
   setTimeout(() => el.style.opacity = '0', 2500);
@@ -1099,8 +1358,15 @@ function saveAlerts() {
 function renderAlerts() {
   document.getElementById('aEmail').value = alertPrefs.email || '';
   document.getElementById('aTime').value  = alertPrefs.time  || '07:00';
-  [['move','aMove'],['vol','aVol'],['news','aNews'],['analyst','aAnalyst'],['daily','aDaily']].forEach(([k,id]) => {
-    document.getElementById(id).classList.toggle('on', !!alertPrefs[k]);
+  document.getElementById('aPhone').value = alertPrefs.phone || '';
+  const toggles = [
+    ['move','aMove'],['vol','aVol'],['news','aNews'],['analyst','aAnalyst'],['daily','aDaily'],
+    ['emailOn','aEmailOn'],['smsOn','aSmsOn'],
+    ['smsSB','sSB'],['smsMove','sMove'],['smsDaily','sDaily'],['smsAnalyst','sAnalyst']
+  ];
+  toggles.forEach(([k,id]) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('on', alertPrefs[k] !== false);
   });
 }
 
@@ -1265,10 +1531,12 @@ Rules:
 
   try {
     clearInterval(stIv);
-    const resp = await fetch('/api/chat', {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        
+        'x-api-key': APEX_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
@@ -1377,7 +1645,11 @@ async function fetchT20Price(ticker) {
 
 // ── INIT ──
 document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
-startScan();
+// Portfolio will be loaded from Firestore once user signs in
+// startScan runs after auth check
+setTimeout(() => {
+  if (document.getElementById('authOverlay').style.display === 'none') startScan();
+}, 1500);
 </script>
 </body>
 </html>
