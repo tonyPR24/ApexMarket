@@ -1016,7 +1016,27 @@ async function startScan() {
     advanceStage(4);
     await new Promise(r => setTimeout(r, 400));
 
-    if (combined.length === 0) throw new Error('No significant movers detected today. Market may be quiet or data is unavailable. Try again during market hours (9:30am–4pm ET).');
+    if (combined.length === 0) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('errorBox').style.display      = 'block';
+  document.getElementById('errTitle').textContent        = 'MARKET IS QUIET';
+  document.getElementById('errTitle').style.color        = 'var(--gold)';
+  document.getElementById('errMsg').textContent          = 'No stocks have moved significantly yet. Markets typically heat up after 10am ET. Check back soon or try the ★ TOP 20 tab for AI-ranked picks anytime.';
+  document.getElementById('liveStatus').textContent      = 'QUIET';
+  document.getElementById('rescanBtn').disabled          = false;
+  return;
+}
+```
+
+---
+
+**CHANGE 3** — Find this:
+```
+>= 2.5
+```
+Change it to:
+```
+>= 1.5
 
     // STAGE 5-6: AI Analysis
     advanceStage(5);
