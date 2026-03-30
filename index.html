@@ -487,7 +487,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <div class="error-box" id="errorBox">
-    <div class="err-title">SCAN FAILED</div>
+    <div class="err-title" id="errTitle">SCAN FAILED</div>
     <div class="err-msg" id="errMsg">Unable to complete scan. Check your API key and try again.</div>
     <button class="retry-btn" onclick="startScan()">↻ RETRY</button>
   </div>
@@ -733,7 +733,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <div class="error-box" id="t20Error" style="display:none">
-    <div class="err-title">SCAN FAILED</div>
+    <div class="err-title" id="errTitle">SCAN FAILED</div>
     <div class="err-msg" id="t20ErrMsg">Unable to complete AI ranking.</div>
     <button class="retry-btn" onclick="runTop20Scan()">↻ RETRY</button>
   </div>
