@@ -803,7 +803,7 @@ async function startScan() {
     advanceStage(0);
     const allData = [];
     const batchSize = 10;
-    for (let i = 0; i < Math.min(WATCH_LIST.length, 60); i += batchSize) {
+    for (let i = 0; i < WATCH_LIST.length; i += batchSize) {
       const batch = WATCH_LIST.slice(i, i + batchSize);
       const results = await Promise.allSettled(batch.map(t => fetchStockData(t)));
       results.forEach(r => { if (r.status === 'fulfilled' && r.value) allData.push(r.value); });
@@ -876,7 +876,7 @@ Rules:
     const resp = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 8000, messages: [{ role: 'user', content: prompt }] })
     });
 
     if (!resp.ok) {
