@@ -914,7 +914,7 @@ function buildTape(stocks) {
 async function fetchStockData(ticker) {
   try {
     const url   = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker + '?interval=1d&range=5d';
-    const proxy = 'https://thingproxy.freeboard.io/fetch/' + url;
+    const proxy = '/api/stocks?ticker=' + tickerl;
     const resp  = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
     const data  = await resp.json();
     const meta  = data?.chart?.result?.[0]?.meta;
@@ -942,7 +942,7 @@ async function fetchStockData(ticker) {
 async function fetchNews(ticker) {
   try {
     const url   = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker + '?modules=news&range=1d&interval=1d';
-    const proxy = 'https://thingproxy.freeboard.io/fetch/' + url;
+    const proxy = '/api/stocks?ticker=' + ticker;
     const resp  = await fetch(proxy, { signal: AbortSignal.timeout(6000) });
     // Yahoo doesn't always return news in chart endpoint, so AI handles this
     return null;
@@ -1642,7 +1642,7 @@ function renderTop20() {
 // ── FETCH PRICE FOR TOP 20 ──
 async function fetchT20Price(ticker) {
   try {
-    const url   = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker + '?interval=1d&range=1d';
+    const url   = '/api/stocks?ticker=' + ticker';
     const proxy = 'https://thingproxy.freeboard.io/fetch/' + url;
     const resp  = await fetch(proxy);
     const data  = await resp.json();
