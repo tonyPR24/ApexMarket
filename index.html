@@ -938,13 +938,8 @@ async function fetchStockData(ticker) {
 
 // ── FETCH NEWS ──
 async function fetchNews(ticker) {
-  try {
-    const url   = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker + '?modules=news&range=1d&interval=1d';
-    const proxy = '/api/stocks?ticker=' + ticker;
-    const resp  = await fetch(proxy, { signal: AbortSignal.timeout(6000) });
-    // Yahoo doesn't always return news in chart endpoint, so AI handles this
-    return null;
-  } catch (e) { return null; }
+  return null;
+
 }
 
 // ── STAGE ANIMATION ──
