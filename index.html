@@ -913,9 +913,7 @@ function buildTape(stocks) {
 // ── FETCH PRICE DATA ──
 async function fetchStockData(ticker) {
   try {
-    const url   = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ticker + '?interval=1d&range=5d';
-    const proxy = '/api/stocks?ticker=' + tickerl;
-    const resp  = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
+    const resp  = await fetch('/api/stocks?ticker=' + ticker, { signal: AbortSignal.timeout(8000) });
     const data  = await resp.json();
     const meta  = data?.chart?.result?.[0]?.meta;
     const quotes = data?.chart?.result?.[0]?.indicators?.quote?.[0];
