@@ -1379,7 +1379,16 @@ async function fetchT20Price(ticker) {
     if (el) el.innerHTML = '<span style="color:var(--muted2)">unavailable</span>';
   }
 }
-
+async function fetchPortPrice(ticker) {
+  try {
+    const resp = await fetch('/api/stocks?ticker=' + ticker);
+    const data = await resp.json();
+    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (!price) return;
+    const pos = portfolio.find(p => p.ticker === ticker);
+    if (pos) { pos.currentPrice = price; savePort(); renderPortfolio(); }
+  } catch(e) {}
+}
 document.getElementById('pDate').value = new Date().toISOString().split('T')[0];
 </script>
 </body>
