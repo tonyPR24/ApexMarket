@@ -1094,7 +1094,7 @@ function renderPortfolio() {
       + '<td><span class="td-mono" style="color:var(--muted2)">' + (p.date || '—') + '</span></td>'
       + '<td><button class="del-btn" onclick="removePosition(\'' + p.ticker + '\')">✕</button></td>';
     body.appendChild(row);
-    fetchPortPrice(p.ticker);
+    
   });
   const totPnl = totCur - totInv;
   const totPct = ((totPnl / totInv) * 100).toFixed(2);
