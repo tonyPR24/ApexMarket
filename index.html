@@ -1640,10 +1640,8 @@ function renderTop20() {
 // ── FETCH PRICE FOR TOP 20 ──
 async function fetchT20Price(ticker) {
   try {
-    const url   = '/api/stocks?ticker=' + ticker';
-    const proxy = 'https://thingproxy.freeboard.io/fetch/' + url;
-    const resp  = await fetch(proxy);
-    const data  = await resp.json();
+   const resp  = await fetch('/api/stocks?ticker=' + ticker);
+const data  = await resp.json();
     const meta  = data?.chart?.result?.[0]?.meta;
     if (!meta) return;
     const price = meta.regularMarketPrice, prev = meta.chartPreviousClose;
