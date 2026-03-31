@@ -1057,6 +1057,7 @@ function addPosition() {
   if (portfolio.some(p => p.ticker === ticker)) { toast(ticker + ' already tracked'); return; }
   portfolio.push({ ticker, entryPrice: entry, shares, date: date || new Date().toISOString().split('T')[0], currentPrice: entry });
   savePort(); renderPortfolio(); toast(ticker + ' added');
+  fetchPortPrice(ticker);
 }
 
 function removePosition(ticker) {
@@ -1093,6 +1094,7 @@ function renderPortfolio() {
       + '<td><span class="td-mono" style="color:var(--muted2)">' + (p.date || '—') + '</span></td>'
       + '<td><button class="del-btn" onclick="removePosition(\'' + p.ticker + '\')">✕</button></td>';
     body.appendChild(row);
+    fetchPortPrice(p.ticker);
   });
   const totPnl = totCur - totInv;
   const totPct = ((totPnl / totInv) * 100).toFixed(2);
@@ -1380,6 +1382,16 @@ async function fetchT20Price(ticker) {
   }
 }
 async function fetchPortPrice(ticker) {
+  try {
+    const resp = await fetch('/api/stocks?ticker=' + ticker);
+    const data = await resp.json();
+    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (!price) return;
+    const pos = portfolio.find(p => p.ticker === ticker);
+    if (pos) { pos.currentPrice = price; savePort(); renderPortfolio(); }
+  } catch(e) {}
+}
+  async function fetchPortPrice(ticker) {
   try {
     const resp = await fetch('/api/stocks?ticker=' + ticker);
     const data = await resp.json();
