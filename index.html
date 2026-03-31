@@ -1539,15 +1539,13 @@ Rules:
 - mix large-cap, mid-cap, and high-conviction names
 - reflect real current market conditions as of ${today}`;
 
-  try {
+try {
     clearInterval(stIv);
-       advanceStage(6);
     const resp = await fetch('/api/chat', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  
-  },
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
     });
 
